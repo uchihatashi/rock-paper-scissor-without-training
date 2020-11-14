@@ -77,21 +77,23 @@ while capture.isOpened():
         hull = cv2.convexHull(contour, returnPoints=False)
         defects = cv2.convexityDefects(contour, hull)
 
-        # Use cosine rule to find angle of the far point from the start and end point i.e. the convex points (the finger
-        # tips) for all defects
+        # Use cosine rule to find angle of the far point from the start and end point i.e. the convex points (the finger tips) for all defects
         count_defects = 0
-
+        
         for i in range(defects.shape[0]):
             s, e, f, d = defects[i, 0]
             start = tuple(contour[s][0])
             end = tuple(contour[e][0])
             far = tuple(contour[f][0])
-
+            
+            # find length of all sides of triangle
             a = math.sqrt((end[0] - start[0]) ** 2 + (end[1] - start[1]) ** 2)
             b = math.sqrt((far[0] - start[0]) ** 2 + (far[1] - start[1]) ** 2)
             c = math.sqrt((end[0] - far[0]) ** 2 + (end[1] - far[1]) ** 2)
-            angle = (math.acos((b ** 2 + c ** 2 - a ** 2) / (2 * b * c)) * 180) / 3.14
-
+            # apply cosine rule 
+            angle = (math.acos((b**2 + c**2 - a**2) / (2*b*c)) * 180) / 3.14
+    
+            
             # if angle > 90 draw a circle at the far point
             if angle <= 90:
                 count_defects += 1
